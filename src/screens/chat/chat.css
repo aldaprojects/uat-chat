@@ -1,0 +1,31 @@
+.leftBox {
+    height: calc(100% - 64px);
+    border: 1px solid #444;
+    border-style: none solid none none;
+}
+
+.rightBox {
+    height: calc(100% - 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.col1 {
+    height: 100%;
+    width: 35%;
+}
+
+.col2 {
+    height: 100%;
+    width: 65%;
+}
+
+.container {
+    height: 100vh;
+    max-width: 1300px;
+    margin: auto;
+    display: flex;
+    padding: 2vh;
+}
+

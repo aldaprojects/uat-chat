@@ -1,0 +1,30 @@
+.list {
+    overflow: auto;
+    height: 100%;
+    border: 1px solid #444;
+    border-style: solid none none none;
+    position: relative;
+}
+
+.list-item {
+    padding-left: 30px !important;
+    color: grey;
+}
+
+.child {
+    background-color: greenyellow;
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 18px;
+    margin-bottom: 7px;
+    border: 1px solid #212121;
+    
+}
+
+.parent {
+    position: relative;
+}

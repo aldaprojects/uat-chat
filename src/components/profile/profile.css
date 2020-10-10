@@ -1,0 +1,27 @@
+.avatar {
+    border-radius: 100%;
+    width: 230px;
+    height: 230px;
+    box-shadow: 3px 3px 10px black;
+}
+
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+}
+
+.form {
+    height: 60%;
+    padding: 0 0 30px 30px;
+}
+
+.item {
+    padding-left: 30px;
+}
+
+.text-field {
+    width: 100%;
+}
+

@@ -1,0 +1,15 @@
+.imgWrap {
+    margin-bottom: 20px;
+}
+
+.shadow {
+    z-index: 0;
+    box-shadow: 100px 10px 200px 90px rgba(192, 192, 192, 0.5);
+    width: 0;
+}
+
+.logo {
+    -webkit-filter: drop-shadow(4px 4px 4px #000);
+    filter: drop-shadow(4px 4px 4px #000);
+    z-index: 1;
+}

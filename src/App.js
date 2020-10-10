@@ -1,26 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import AppRouter from './routes/AppRouter';
+
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { deepOrange, orange } from '@material-ui/core/colors';
+import { CssBaseline } from '@material-ui/core';
+
+const HeroesApp = () => {
+
+    const theme = createMuiTheme({
+        palette: {
+            type: 'dark',
+            primary: deepOrange,
+            secondary: orange,
+            background: {
+                paper: '#212121',
+                default: '#111111'
+            }
+        }
+    })
+
+    return (
+        <MuiThemeProvider theme = { theme }>
+            <CssBaseline />
+            <AppRouter />
+        </MuiThemeProvider>
+    );
 }
 
-export default App;
+export default HeroesApp;
