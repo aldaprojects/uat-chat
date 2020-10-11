@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 
 import { 
     AppBar, 
@@ -10,8 +10,9 @@ import {
 } from '@material-ui/core';
 
 import { 
+    AccountCircle,
+    ArrowBack,
     Group, 
-    MoreVert, 
     School 
 } from '@material-ui/icons';
 
@@ -20,10 +21,38 @@ import MessageBox from '../../components/messagebox/MessageBox';
 import Messages from '../../components/messages/Messages';
 
 import './chat.css';
+import UsersList from '../../components/users-list/UsersList';
 
-const Chat = () => {
+import { joinRoom, offMessage } from '../../services/socket';
 
+const Chat = ({ history }) => {
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    useEffect(() => {
+        joinRoom( user._id, (resp) => {
+            console.log(resp)
+        });
+        return () => {
+            offMessage();
+        }
+
+    }, [ user._id ])
+
+    const [ showUsersList, setshowUsersList ] = useState(true);
+
+    const handleClick = () => {
+        setshowUsersList( !showUsersList );
+    }
+    
     const theme = useTheme();
+
+    const handleLogout = () => {
+        localStorage.setItem('user', JSON.stringify({
+            logged: false
+        }));
+        history.replace('/login');
+    }
 
     return (
         <div className="container">
@@ -40,11 +69,25 @@ const Chat = () => {
                         }}>
                             UAT CHAT
                             </Typography>
-                        <IconButton edge="end" color="inherit"> <MoreVert /> </IconButton>
+                        <IconButton 
+                            edge="end" 
+                            color="inherit"
+                            onClick={handleClick}
+                        > 
+                            {
+                                showUsersList
+                                ? <AccountCircle /> 
+                                : <ArrowBack />
+                            }
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 <div className="leftBox" >
-                    <UserProfile />
+                    {
+                        showUsersList
+                        ? <UsersList />
+                        : <UserProfile user = { user } /> 
+                    }
                 </div>
             </div>
             <div className="col2" style={{ backgroundColor: theme.palette.background.paper }} >
@@ -61,7 +104,7 @@ const Chat = () => {
                             Taller de React
                         </Typography>
 
-                        <Button color="inherit">Cerrar Sesión</Button>
+                        <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
                     </Toolbar>
                 </AppBar>
                 <div className="rightBox">

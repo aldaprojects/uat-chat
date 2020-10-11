@@ -39,7 +39,7 @@ export const useForm = ( initialState = {} ) => {
                 value: target.value,
                 valid: valid,
                 touched: true
-            }
+            },
         });
     }
 

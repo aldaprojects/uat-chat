@@ -1,28 +1,24 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import {
     Button,
     TextField,
     Grid,
-    Snackbar,
     Typography,
     useTheme,
     Link
 } from '@material-ui/core';
-
 import { Link as RouterLink } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import { postUser } from '../../services/user_service';
 import { useForm } from '../../hooks/useForm';
 import { isFormValid } from '../../helpers/global_helpers';
-
 import Logo from '../../components/logo/Logo';
-
 import '../login/login.css';
 
-export default function Register() {
-
+export default function Register({ history }) {
     const theme = useTheme();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [ data, handleInputChange ] = useForm({
         email: {
@@ -42,17 +38,6 @@ export default function Register() {
         }
     });
 
-    const [state, setState] = useState({
-        open: false,
-        message: ''
-    });
-
-    const { open, message } = state;
-
-    const handleClose = () => {
-        setState({ ...state, open: false });
-    };
-
     const handleSubmit = e => {
         e.preventDefault();
 
@@ -71,34 +56,27 @@ export default function Register() {
                     if( !resp.ok ) {
                         switch( resp.error_code ) {
                             case 100:
-                                setState({ open: true, message: 'El correo ya está en uso.' });
+                                enqueueSnackbar('El correo ya está en uso.', { variant: 'error' });
                                 break;
                             case 106:
-                                setState({ open: true, message: 'Hubo un problema con el servidor.' });
+                                enqueueSnackbar('Hubo un problema con el servidor.', { variant: 'error' });
                                 break;
                             default:
-                                setState({ open: true, message: 'Error.' });
+                                enqueueSnackbar('Error.', { variant: 'error' });
                                 break;
                         }
                     } else {
-                        // TODO: login
+                        enqueueSnackbar('Cuenta creada correctamente. Por favor inicia sesión.', { variant: 'success' });
+                        history.push('/login');
                     }
                 })
         } else {
-            setState({ open: true, message: 'Introduce correctamente tus credenciales.' });
+            enqueueSnackbar('Introduce correctamente tus credenciales.', { variant: 'error' });
         }
     }
 
     return (
         <div className="root">
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                open={open}
-                onClose={handleClose}
-                autoHideDuration={4000}
-                message={ message }
-                variant="success"
-            />
             <div className="login-box">
                 <Logo />
                 <Typography variant="h5" component="h1" color="primary">

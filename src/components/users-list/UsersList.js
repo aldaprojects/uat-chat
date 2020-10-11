@@ -1,86 +1,34 @@
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, Typography, useTheme } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { 
+    Avatar, 
+    List, 
+    ListItem, 
+    ListItemAvatar, 
+    ListItemText, 
+    ListSubheader,
+    useTheme 
+} from '@material-ui/core';
 
 import './userslist.css';
 
-const people = [
-    {
-        on: true,
-        name: 'aldairsr1'
-    },
-    {
-        on: true,
-        name: 'asdasdasd'
-    },
-    {
-        on: true,
-        name: 'fefefefef'
-    },
-    {
-        on: false,
-        name: 'fasdasdasd'
-    },
-    {
-        on: false,
-        name: 'qweqweqweqwe'
-    },
-    {
-        on: false,
-        name: 'asd1231231'
-    },
-    {
-        on: false,
-        name: 'fefef23231'
-    },
-    {
-        on: false,
-        name: 'ff3f3f5gh423'
-    },
-    {
-        on: false,
-        name: 'hjzrhef32'
-    },
-    {
-        on: false,
-        name: 'uyty5i453'
-    },
-    {
-        on: false,
-        name: 'aldairsr1'
-    },
-    {
-        on: false,
-        name: '23423416efgsdg'
-    },
-    {
-        on: false,
-        name: '235423'
-    },
-    {
-        on: false,
-        name: 'gfgrhrh'
-    },
-    {
-        on: false,
-        name: '3h35h35h35h3'
-    },
-    {
-        on: false,
-        name: '3h35h23rsdasd'
-    },
-    {
-        on: false,
-        name: 'adasdasd'
-    },
-    {
-        on: false,
-        name: 'asdasd12'
-    },
-]
+import { getUsersOnline, offUsersList } from '../../services/socket';
 
 const UsersList = () => {
 
     const theme = useTheme();
+
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        getUsersOnline(users => {
+            setUsers(users);
+        });
+        return () => {
+            offUsersList();
+        }
+    }, []);
+
 
     return (
         <>
@@ -90,16 +38,18 @@ const UsersList = () => {
                             Conectados
                     </ListSubheader>
                     {
-                        people.map((item) => (
-                            item.on &&
-                            <ListItem button className="list-item" >
+                        users.map((item) => (
+                            item.connected &&
+                            <ListItem
+                                key={ item._id } 
+                                button className="list-item" >
                                 <ListItemAvatar>
                                     <div className="parent">
                                         <Avatar />
                                         <div className="child"></div>
                                     </div>
                                 </ListItemAvatar>
-                                <ListItemText primary={item.name} />
+                                <ListItemText primary={item.username} />
                             </ListItem>
 
                         ))
@@ -110,13 +60,15 @@ const UsersList = () => {
                         Desconectados
                     </ListSubheader>
                     {
-                        people.map((item) => (
-                            !item.on &&
-                            <ListItem className="list-item">
+                        users.map((item) => (
+                            !item.connected &&
+                            <ListItem
+                                key={ item._id } 
+                                className="list-item">
                                 <ListItemAvatar>
                                     <Avatar />
                                 </ListItemAvatar>
-                                <ListItemText primary={item.name} />
+                                <ListItemText primary={item.username} />
                             </ListItem>
 
                         ))

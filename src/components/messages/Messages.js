@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { 
     List, 
@@ -9,123 +9,55 @@ import {
 
 import './messages.css';
 
-const messages = [
-    {
-        id: 1,
-        primary: 'Persona 1',
-        secondary: "probando",
-        person: '/static/images/avatar/5.jpg',
-    },
-    {
-        id: 2,
-        primary: 'Persona 2',
-        secondary: `Do you have a suggestion for a good present for John on his work
-        anniversary. I am really confused & would love your thoughts on it.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 3,
-        primary: 'Recipe to try',
-        secondary: 'I am try out this new BBQ recipe, I think this might be',
-        person: '/static/images/avatar/2.jpg',
-    },
-    {
-        id: 4,
-        primary: 'Yes!',
-        secondary: 'I have the tickets to the ReactConf for this year.',
-        person: '/static/images/avatar/3.jpg',
-    },
-    {
-        id: 2,
-        primary: "Doctor's Appointment",
-        secondary: 'My appointment for the doctor was rescheduled for next Saturday.',
-        person: '/static/images/avatar/4.jpg',
-    },
-    {
-        id: 6,
-        primary: 'Discussion',
-        secondary: `que onda, estoy probando la longitud `,
-        person: '/static/images/avatar/5.jpg',
-    },
-    {
-        id: 2,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 8,
-        primary: 'Summer BBQ',
-        secondary: `hey yo tambien estoy probando eso, pero no se quiero ver si todo sale bien`
-    },
-    {
-        id: 2,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 2,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 11,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 11,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-    {
-        id: 11,
-        primary: 'Summer BBQ',
-        secondary: `Who wants to have a cookout this weekend? I just got some furniture
-        for my backyard and would love to fire up the grill.`,
-        person: '/static/images/avatar/1.jpg',
-    },
-];
+import { getMessages } from '../../services/socket';
 
 const Messages = () => {
 
     const theme = useTheme();
 
+    const chatRef = useRef();
+    const [messages, setMessages] = useState([]);
+
+    const { _id: user_id } = JSON.parse(localStorage.getItem('user'));
+    
+    useEffect(() => {
+        chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }, [ messages ])
+
+    getMessages(mgs => {
+        setMessages(mgs);
+    });
+
+
     return (
         <List
+            ref={ chatRef }
             className="chat-box">
             {
-                messages.map(({ id, primary, secondary, person }) => (
-                    <div style={{
+                messages.map(({ _id: id, message, from }) => (
+                    <div 
+                    key = { id }
+                    style={{
                         display: "flex",
-                        justifyContent: id == 2 ? "flex-end" : "flex-start"
+                        justifyContent: user_id === from.id ? "flex-end" : "flex-start"
                     }}>
                         <Paper elevation={3} style={{
                             maxWidth: 500,
                             minWidth: 100,
-                            backgroundColor: id == 2 ? theme.palette.secondary.dark : theme.palette.grey[800],
+                            backgroundColor: user_id === from.id ? theme.palette.secondary.dark : theme.palette.grey[800],
                             padding: "10px 10px 0",
                             marginBottom: 10,
                             borderRadius: 15,
                         }}>
                             {
-                                id !== 2 
+                                from.id !== user_id
                                 && 
                                 <Typography variant="body1" color="primary">
-                                    { primary }
+                                    { from.username }
                                 </Typography>
                             }
                             <Typography variant="body2" gutterBottom>
-                                {secondary}
+                                { message }
                             </Typography>
                         </Paper>
                     </div>

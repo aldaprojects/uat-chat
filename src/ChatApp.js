@@ -5,6 +5,7 @@ import AppRouter from './routes/AppRouter';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { deepOrange, orange } from '@material-ui/core/colors';
 import { CssBaseline } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
 
 const HeroesApp = () => {
 
@@ -18,12 +19,14 @@ const HeroesApp = () => {
                 default: '#111111'
             }
         }
-    })
+    });
 
     return (
         <MuiThemeProvider theme = { theme }>
-            <CssBaseline />
-            <AppRouter />
+            <SnackbarProvider maxSnack={3} >
+                <CssBaseline />
+                <AppRouter />
+            </SnackbarProvider>
         </MuiThemeProvider>
     );
 }

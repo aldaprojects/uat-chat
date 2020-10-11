@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
     Button,
@@ -6,7 +6,7 @@ import {
     Grid,
     Typography,
     Link,
-    Snackbar, useTheme
+    useTheme
 } from '@material-ui/core';
 
 import { Link as RouterLink } from 'react-router-dom';
@@ -17,8 +17,10 @@ import { login } from '../../services/user_service';
 
 import './login.css';
 import Logo from '../../components/logo/Logo';
+import { useSnackbar } from 'notistack';
 
-const Login = () => {
+const Login = ({ history }) => {
+    const { enqueueSnackbar } = useSnackbar();
 
     const theme = useTheme();
     
@@ -34,67 +36,55 @@ const Login = () => {
             touched: false
         }
     });
-    
-    const [state, setState] = useState({
-        open: false,
-        message: ''
-    });
-
-    const { open, message } = state;
-
-    const handleClose = () => {
-        setState({ ...state, open: false });
-    };
 
     const handleSubmit = e => {
         e.preventDefault();
+
+        console.log(data)
 
         if( isFormValid(data) ) {
 
             const user = {
                 email: data.email.value,
-                username: 'asdasd',
-                password: data.password.value,
+                password: data.password.value
             }
 
             login(user)
             .then(resp => {
+
                 console.log(resp)
                 
                 if( !resp.ok ) {
                     switch( resp.error_code ) {
                         case 109:
-                            setState({ open: true, message: 'Credenciales incorrectas.' });
+                            enqueueSnackbar('Credenciales incorrectas.', { variant: 'error'} );
                             break;
                         case 106:
-                            setState({ open: true, message: 'Hubo un problema con el servidor.' });
+                            enqueueSnackbar('Hubo un problema con el servidor.', { variant: 'error'} );
                             break;
                         case 107:
-                            setState({ open: true, message: 'No existe una cuenta con esas credenciales.' });
+                            enqueueSnackbar('No existe una cuenta con esas credenciales.', { variant: 'error'} );
                             break;
                         default:
-                            setState({ open: true, message: 'Error.' });
+                            enqueueSnackbar('Error.', { variant: 'error'} );
                             break;
                     }
                 } else {
-                    // TODO: login
+                    localStorage.setItem('user', JSON.stringify({
+                        ...resp.body,
+                        password: data.password.value,
+                        logged: true
+                    }));
+                    history.replace('/chat');
                 }
             })
         } else {
-            setState({ open: true, message: 'Introduce correctamente tus credenciales.' });
+            enqueueSnackbar('Introduce correctamente tus credenciales.', { variant: 'error'} );
         }
     }
 
     return (
         <div className="root">
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                open={open}
-                onClose={handleClose}
-                autoHideDuration={4000}
-                message={ message }
-                variant="success"
-            />
             <div className="login-box">
                 <Logo />
                 <Typography variant="h5" color="primary">
