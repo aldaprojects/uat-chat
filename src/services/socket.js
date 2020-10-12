@@ -1,6 +1,8 @@
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:8000', {
+import { URL } from '../env/env';
+
+const socket = io(URL, {
     transports: ['websocket'], 
     upgrade: false
 });
